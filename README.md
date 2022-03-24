@@ -8,4 +8,4 @@ The full code is not shared, but some of its parts are published here.
 
 Check the [wikis](https://github.com/Diicorp95/project-shapeless/wiki) to get more information.
 
-Project: Shapeless &copy; Larry "Diicorp95" Holst, 2021. [MIT License](https://diicorp95.mit-license.org).
+Project: Shapeless &copy; Larry "Diicorp95" Holst, 2021-present. [MIT License](https://diicorp95.mit-license.org).

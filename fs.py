@@ -26,13 +26,13 @@ class fs:
     absp = lambda path: os.path.abspath(path)
 
     def readlines(path):
-        path = abs(path)
+        path = fs.absp(path)
         try:
             f = open(path, "r")
         except IOError:
             return 1
         try:
-            _ = [os.path.getsize(path)]
+            tfile = [os.path.getsize(path)]
         except IOError:
             return 1
         try:
@@ -42,10 +42,10 @@ class fs:
         ln = 0
         for s in read:
             ln += 1
-            _.append(s)
+            tfile.append(s)
         f.close()
         sendterm("Readed to a list from file: " + path, "file")
-        return _
+        return tfile
 
     def writelines(path, input_list):
         path = fs.absp(path)
@@ -57,40 +57,38 @@ class fs:
             try:
                 for i, s in enumerate(input_list):
                     if i > 0:
-                        f.write(s + "\n")
+                        f.write(str(s) + "\n")
             except IOError:
                 return 1
         else:
             for s in input_list:
                 try:
-                    f.write(s + "\n")
+                    f.write(str(s) + "\n")
                 except IOError:
                     return 1
         f.close()
         sendterm("Saved a list to file: " + path, "file")
         return 0
 
-    def delete(path, ask=True):
+    def delete(path, ask = True):
         path = fs.absp(path)
         try:
-            with open(path, "w") as f:
-                f.write("")
-        except IOError:
-            return 1
-        try:
-            if ask or not (askterm("Remove file: " + path + "?", "file")):
+            if ask and not (askterm("Remove file: " + path + " ?", "file")):
                 return 2
             if os.path.isdir(path):
                 raise IsADirectoryError
             os.unlink(path)
         except IsADirectoryError:
-            if ask or not askterm("Remove directory: " + path + "?", "file"):
+            result = None
+            if ask or not askterm("Remove directory: " + path + " ?", "file"):
                 return 2
             shutil.avoids_symlink_attacks = False
             try:
                 shutil.rmtree(path)
             except Exception as e:
-                return e
+                result = e
+            shutil.avoids_symlink_attacks = True
+            return result
         except:
             return 1
         return 0
@@ -119,13 +117,23 @@ class fs:
 if __name__ == "__main__":  # demo
     sendmsg = lambda s: print(GC + "Chat + term. : " + NC + s)  # not implemented
     sendterm = (
-        lambda s, mgrp="": print(SC + "[File I/O]" + NC, s)
-        if mgrp == "file"
-        else print(GC + "Terminal only: " + NC + s)
+        lambda s, mgrp = "": print(SC + "[File I/O]" + NC, s) \
+        if mgrp == "file" else print(GC + "Terminal only: " + NC + s)
     )  # not implemented
     BM = "\033[7m"  # demo
     BC = "\033[3m"  # demo
     SC = "\033[0;91m"  # demo
     GC = "\033[0;94m"  # demo
     NC = "\033[0m"  # demo
-    # Test it on yourself!
+    z = []  # demo
+    while True:  # demo
+        m = input("| ")  # demo
+        if m == "\005":  # demo
+            break  # demo
+        z.append(m)  # demo
+        if m[-1] == "\005":  # demo
+            z[-1] = z[-1][:-1]
+            break  # demo
+    fs.writelines("test.txt", z)  # demo
+    fs.readlines("test.txt")  # demo
+    fs.delete("test.txt")  # demo
